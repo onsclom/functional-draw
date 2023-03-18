@@ -22,10 +22,10 @@ const circles = (time) =>
 
 animation((time) => 
   [background, ...circles(time)], 
-  {
-    canvasId: "animation-example",
-    width: 500,
-    height: 500,
-  });`;
+{
+  canvasId: "animation-example",
+  width: 500,
+  height: 500,
+});`;
 
 export default example;
