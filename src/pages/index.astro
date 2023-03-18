@@ -1,15 +1,126 @@
 ---
+import { Code } from "astro/components";
+
+import imageExample from "../examples/image-example";
+import animationExample from "../examples/animation-example";
 ---
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Functional Draw</title>
+    <link rel="stylesheet" href="/vanilla.css" />
+    <style>
+      canvas {
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+          0 4px 6px -4px rgb(0 0 0 / 0.1);
+      }
+
+      .sketch-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      @media (max-width: 800px) {
+        .sketch-container {
+          flex-direction: column;
+        }
+
+        .sketch-code {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1 style="text-align: center;">Functional Draw ✏️</h1>
+      <p style="text-align: center;">
+        Make generative art 🎨 with pure functions λ
+      </p>
+
+      <h2>Make static images 📸</h2>
+      <div class="sketch-container">
+        <div class="sketch-code">
+          <Code code={imageExample} lang="typescript" />
+        </div>
+
+        <div style="flex-grow: 1; width: 100%; max-width: 500px;">
+          <canvas id="image-example" style="width: 100%"></canvas>
+
+          <script>
+            import { image } from "../library/library";
+
+            const range = (n: number) => [...Array(n).keys()];
+
+            const background = {
+              type: "rect",
+              x: 0,
+              y: 0,
+              width: 500,
+              height: 500,
+              color: "white",
+            };
+
+            const circles = range(100).map((i) => ({
+              type: "circle",
+              x: (i % 10) * 50 + 25,
+              y: Math.floor(i / 10) * 50 + 25,
+              radius: 20 + Math.sin(i / 2) * 10,
+              color: "black",
+            }));
+
+            image([background, ...circles], {
+              canvasId: "image-example",
+              width: 500,
+              height: 500,
+            });
+          </script>
+        </div>
+      </div>
+
+      <h2>Make animations 🎬</h2>
+      <div class="sketch-container">
+        <div class="sketch-code">
+          <Code code={animationExample} lang="typescript" />
+        </div>
+        <div style="flex-grow: 1; width: 100%; max-width: 500px;">
+          <canvas id="animation-example" style="width: 100%"></canvas>
+
+          <script>
+            import { animation } from "../library/library";
+
+            const range = (n: number) => [...Array(n).keys()];
+
+            const background = {
+              type: "rect",
+              x: 0,
+              y: 0,
+              width: 500,
+              height: 500,
+              color: "white",
+            };
+
+            const circles = (time) =>
+              range(100).map((i) => ({
+                type: "circle",
+                x: (i % 10) * 50 + 25,
+                y: Math.floor(i / 10) * 50 + 25,
+                radius: 20 + Math.sin(i / 2 + time) * 10,
+                color: "black",
+              }));
+
+            animation((time) => [background, ...circles(time / 1000)], {
+              canvasId: "animation-example",
+              width: 500,
+              height: 500,
+            });
+          </script>
+        </div>
+      </div>
+    </main>
+  </body>
 </html>
